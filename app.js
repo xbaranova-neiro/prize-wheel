@@ -41,12 +41,12 @@ function drawWheel(){
 }
 
 function showReady(){
-  icon.textContent='🎁';overline.textContent='ОДНА ПОПЫТКА • ОДИН ПОДАРОК';result.textContent='Нажмите кнопку — и колесо выберет ваш подарок';description.textContent='';message.textContent='В этой прокрутке доступна одна попытка в этом браузере';spin.disabled=false;spin.hidden=false;spin.classList.remove('busy');spin.innerHTML='<span>↻</span> Крутить колесо';download.hidden=true;
+  icon.textContent='🎁';overline.textContent='ОДНА ПОПЫТКА • ОДИН ПОДАРОК';result.textContent='Нажмите кнопку — и колесо выберет ваш подарок';description.textContent='';message.textContent='';spin.disabled=false;spin.hidden=false;spin.classList.remove('busy');spin.innerHTML='<span>↻</span> Крутить колесо';download.hidden=true;
 }
 
 function showResult(index,restored=false){
   const prize=rounds[round].prizes[index];
-  icon.textContent='🏆';overline.textContent='ВАШ ПОДАРОК';result.textContent=prize.title;description.textContent=prize.description;message.textContent=restored?'Результат этой прокрутки сохранён в браузере':'Подарок сохранён — его можно скачать сейчас или позже';spin.hidden=true;download.href=downloadUrl(prize.file);download.hidden=false;
+  icon.textContent='🏆';overline.textContent='ВАШ ПОДАРОК';result.textContent=prize.title;description.textContent=prize.description;message.textContent='';spin.hidden=true;download.href=downloadUrl(prize.file);download.hidden=false;
 }
 
 function selectRound(next){
