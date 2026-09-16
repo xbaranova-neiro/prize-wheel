@@ -20,6 +20,8 @@ const rounds=[
 ];
 
 const colors=['#6548e8','#967cf8','#4934ad','#c8bbff'];
+const requestedRound=Number(new URLSearchParams(location.search).get('round'))-1;
+const lockedRound=Number.isInteger(requestedRound)&&requestedRound>=0&&requestedRound<rounds.length?requestedRound:null;
 const wheel=document.querySelector('#wheel'),spin=document.querySelector('#spin'),result=document.querySelector('#result'),description=document.querySelector('#description'),message=document.querySelector('#message'),overline=document.querySelector('#overline'),icon=document.querySelector('#resultIcon'),download=document.querySelector('#download'),list=document.querySelector('#prizes'),roundLabel=document.querySelector('#roundLabel'),roundButtons=[...document.querySelectorAll('[data-round]')];
 let round=0,rotation=0,busy=false;
 
@@ -53,7 +55,7 @@ function selectRound(next){
   const saved=localStorage.getItem(storageKey());saved===null?showReady():showResult(Number(saved),true);
 }
 
-roundButtons.forEach(button=>button.addEventListener('click',()=>selectRound(Number(button.dataset.round))));
+roundButtons.forEach(button=>button.addEventListener('click',()=>{if(lockedRound===null)selectRound(Number(button.dataset.round));}));
 spin.addEventListener('click',()=>{
   if(busy||localStorage.getItem(storageKey())!==null)return;
   busy=true;spin.disabled=true;spin.classList.add('busy');spin.innerHTML='<span>↻</span> Колесо вращается…';message.textContent='Определяем ваш подарок…';
@@ -61,4 +63,5 @@ spin.addEventListener('click',()=>{
   setTimeout(()=>{localStorage.setItem(storageKey(),String(index));busy=false;showResult(index);},4000);
 });
 
-selectRound(0);
+if(lockedRound!==null)document.body.classList.add('single-round');
+selectRound(lockedRound??0);
