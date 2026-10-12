@@ -1,7 +1,7 @@
 const rounds=[
   {label:'ПЕРВАЯ ПРОКРУТКА',prizes:[
     {title:'Золотой стандарт промптинга: 10 формул точных запросов к ИИ',description:'Практический гайд для маркетологов, экспертов и предпринимателей.',file:'1AebI8-wvOpULr8jOix98V1KqxdyGPjHv'},
-    {title:'Нейросети без VPN и зарубежных карт: актуальный гид 2026–2027',description:'Практическое руководство по бесперебойному доступу к передовым ИИ-моделям из России.',file:'1VJR-JI_FwMOTpOhIPwtTNkyedTsRqxGU'},
+    {title:'Нейросети без VPN и зарубежных карт: актуальный гид',description:'Практическое руководство по бесперебойному доступу к передовым ИИ-моделям из России.',file:'1VJR-JI_FwMOTpOhIPwtTNkyedTsRqxGU'},
     {title:'20 услуг, которые вы сможете продавать через вайб-кодинг',description:'Что создавать, кому предлагать в России и сколько на этом зарабатывать.',file:'1H7k4hvx__l5ypCi_8aovd8vAUAJyaxRx'},
     {title:'План Б: как не потерять проекты и данные из-за блокировок',description:'Система, которая вернёт вам контроль, если сервис закроется, аккаунт заблокируют или устройство сломается.',file:'1n5cc1NRbwOmQIJczsR1ZTvvlMdSab1ZX'}
   ]},
@@ -25,7 +25,16 @@ const lockedRound=Number.isInteger(requestedRound)&&requestedRound>=0&&requested
 const wheel=document.querySelector('#wheel'),spin=document.querySelector('#spin'),result=document.querySelector('#result'),description=document.querySelector('#description'),message=document.querySelector('#message'),overline=document.querySelector('#overline'),icon=document.querySelector('#resultIcon'),download=document.querySelector('#download'),list=document.querySelector('#prizes'),roundLabel=document.querySelector('#roundLabel'),roundButtons=[...document.querySelectorAll('[data-round]')];
 let round=0,rotation=0,busy=false;
 
-function storageKey(){return `prize-wheel-16-09-2026-round-${round}`;}
+function storageKey(){return `prize-wheel-round-${round}`;}
+function migrateSavedResults(){
+  for(const key of Object.keys(localStorage)){
+    const match=key.match(/^prize-wheel-\d{2}-\d{2}-\d{4}-round-(\d+)$/);
+    if(!match)continue;
+    const nextKey=`prize-wheel-round-${match[1]}`;
+    if(localStorage.getItem(nextKey)===null)localStorage.setItem(nextKey,localStorage.getItem(key));
+    localStorage.removeItem(key);
+  }
+}
 function downloadUrl(file){return `https://drive.google.com/uc?export=download&id=${file}`;}
 function randomIndex(){const values=new Uint32Array(1);crypto.getRandomValues(values);return values[0]%4;}
 
@@ -63,5 +72,6 @@ spin.addEventListener('click',()=>{
   setTimeout(()=>{localStorage.setItem(storageKey(),String(index));busy=false;showResult(index);},4000);
 });
 
+migrateSavedResults();
 if(lockedRound!==null)document.body.classList.add('single-round');
 selectRound(lockedRound??0);
